@@ -16,5 +16,5 @@ A tarefa principal do analisador léxico é **ler** os caracteres da entrada do 
 
 
 
-
+### Orientador
 [Msc Professor Diego Guedes](https://github.com/diegoguedes "Github") 
