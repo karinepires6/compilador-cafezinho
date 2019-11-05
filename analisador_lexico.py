@@ -51,12 +51,7 @@ t_terminais = [
     'intconst'
 ]
 
-# ignorar tabulação
-t_ignore = " \t"
 
-def t_newline(t):
-    r'\n+'
-    t.lexer.lineno += t.value.count("\n")
 
 def t_palavraReservada(palavra):
     for reservada in palavras_reservadas:
