@@ -92,6 +92,8 @@ def palavraReservadaOuIdentificador(palavra):
         return print("Identificador: {}".format(t_id(palavra)))
 
 text = "programa1"
-palavraReservadaOuIdentificador(text)
+palavraReservadaOuIdentificador(text) or verificaComentario(text) or t_id(text)
+
+
 
 
