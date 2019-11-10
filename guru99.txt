@@ -1,0 +1,4 @@
+int id , id 
+programa {
+retorne id = id ;
+}
