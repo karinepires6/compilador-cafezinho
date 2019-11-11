@@ -7,16 +7,16 @@ Alunos: Karine Pires de Araújo
 '''
 
 palavras_reservadas = [
-    'programa', 
-    'car', 
-    'int', 
-    'retorne', 
-    'leia', 
-    'escreva', 
-    'novalinha', 
-    'se', 
-    'entao', 
-    'senao', 
+    'programa',
+    'car',
+    'int',
+    'retorne',
+    'leia',
+    'escreva',
+    'novalinha',
+    'se',
+    'entao',
+    'senao',
     'enquanto',
     'execute'
 ]
@@ -58,36 +58,45 @@ t_terminais = [
 ]
 
 
-#Verifica se o token é uma palavra reservada da linguagem
+# Verifica se o token é uma palavra reservada da linguagem
 def t_palavraReservada(palavra):
     for reservada in palavras_reservadas:
         if reservada == palavra:
             return True
 
-#Verifica se o token está no array de operadores da linguagem
+# Verifica se o token está no array de operadores da linguagem
+
+
 def t_operador(palavra):
     for i in range(len(t_operadores)):
         if t_operadores[i] == palavra:
             return t_operadores[i]
 
-#Verifica se o token está no array de delimitadores
+# Verifica se o token está no array de delimitadores
+
+
 def t_delimitador(palavra):
     for i in range(len(t_delimitadores)):
         if t_delimitadores[i] == palavra:
             return t_delimitadores[i]
 
-#Verifica se o token é um terminal da gramatica
+# Verifica se o token é um terminal da gramatica
+
+
 def t_terminal(palavra):
     for i in range(len(t_terminais)):
         if t_terminais[i] == palavra:
             return t_terminais[i]
 
-#Verifica se é um identificador
+# Verifica se é um identificador
+
+
 def t_id(palavra):
     if re.fullmatch("[a-zA-Z]+\w*", palavra):
         return palavra
     else:
         return None
+
 
 '''Verifica se a string passada possui comentario
 Retorna uma lista das posições de inicio e fim dos comentarios
@@ -100,13 +109,14 @@ def t_comentario(palavra):
     return listValues
 '''
 
+
 def verificaComentario(filePath):
     with open(filePath) as fp:
         line = fp.readline()
         cnt = 1
         abriuNaLinha = 1
         countCmt = 0
-        #Lê linha por linha no arquivo e separa os tokens
+        # Lê linha por linha no arquivo e separa os tokens
         while line:
             if re.search(r"/\*", line):
                 countCmt = 1
@@ -122,24 +132,47 @@ def verificaComentario(filePath):
         else:
             return True, 'ERRO: COMENTARIO NÃO TERMINA, LINHA {}'.format(abriuNaLinha)
 
+
+def verificaCadeiaInvalida(filePath):
+    with open(filePath) as fp:
+        line = fp.readline()
+        cnt = 1
+        # Lê linha por linha no arquivo e separa os tokens
+        while line:
+            splitted_text = re.split("\s", line)
+            for word in splitted_text:
+                if re.fullmatch("[0-9]+[a-zA-Z]\w+", word):
+                    print(
+                        "ERRO: CARACTERE INVALIDO NA LINHA {} ::{}::".format(cnt, word))
+            line = fp.readline()
+            cnt += 1
+    return True
+
+
 def removeComentarios(palavra):
     return re.sub('/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/', '', palavra)
 
-#Verifica se o token é um integer
+# Verifica se o token é um integer
+
+
 def t_integer(palavra):
     if re.fullmatch("[0-9]+", palavra):
         return palavra
     else:
         return None
 
-#Verifica se o token é um float
+# Verifica se o token é um float
+
+
 def t_float(palavra):
     if re.fullmatch("[0-9]+.[0-9]+", palavra):
         return palavra
     else:
         return None
 
-#Faz a analise dos tokens
+# Faz a analise dos tokens
+
+
 def analisador(palavra):
     if t_palavraReservada(palavra):
         return print("Palavra Reservada: {}".format(palavra))
@@ -158,36 +191,25 @@ def analisador(palavra):
     else:
         return print("ERRO: CARACTERE INVALIDO NA LINHA {} ::{}::".format(None, palavra))
 
+
 def main():
-    #Abre arquivo
+    # Caminho do arquivo
     filepath = 'guru99.txt'
+
+    # Verifica se há comentários que não fecha no programa
     found, p = verificaComentario(filepath)
     if found:
         print(p)
-    else:
-        f = open(filepath, "r")
-        newText = removeComentarios(f.read())
-        splitted_text = re.split("\s", newText)
-        #para cada token verifica qual a qual classe de lexema ele esta inserido
-        for word in splitted_text:
-            analisador(word)
-        '''
-        with open(filepath) as fp:
-            line = fp.readline()
-            cnt = 1
-            #Lê linha por linha no arquivo e separa os tokens
-            while line:
-                #print("Line {}: {}".format(cnt, line.strip()))
-                #antes de fazer o split do texto, verificar se o mesmo possui comentarios
-                newText = removeComentarios(line)
-                splitted_text = re.split("\s", newText)
-                #para cada token verifica qual a qual classe de lexema ele esta inserido
-                for word in splitted_text:
-                    analisador(word, cnt)
-                line = fp.readline()
-                cnt += 1'''
 
-if __name__== "__main__":
-  main()
+    # Verifica se existe cadeia de caracteres invalidas no programa
+    verificaCadeiaInvalida(filepath)
+    f = open(filepath, "r")
+    newText = removeComentarios(f.read())
+    splitted_text = re.split(r"\s", newText)
+    # para cada token verifica qual a qual classe de lexema ele esta inserido
+    for word in splitted_text:
+        analisador(word)
 
 
+if __name__ == "__main__":
+    main()

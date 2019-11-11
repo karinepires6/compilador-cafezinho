@@ -2,8 +2,8 @@
 aquis programa*/
 programa {
 	int i ;
-	i = 5 ;
-	89int = 2 ;
+	int karine = 5 ;
+	int m = 2 ;
 	se ( i == 78 ) {
 		escreva i ;
 	}
