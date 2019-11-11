@@ -90,11 +90,34 @@ def t_comentario(palavra):
     iterator = p.finditer(palavra)
     listValues = []
     for match in iterator:
-        listValues.append(match.group(0))
+        listValues.append(match.span())
     return listValues
 '''
+
+def verificaComentario(filePath):
+    with open(filePath) as fp:
+        line = fp.readline()
+        cnt = 1
+        abriuNaLinha = 1
+        countCmt = 0
+        #Lê linha por linha no arquivo e separa os tokens
+        while line:
+            if re.search(r"/\*", line):
+                countCmt = 1
+                abriuNaLinha = cnt
+            if re.search(r"\*\/", line):
+                countCmt = 2
+            line = fp.readline()
+            cnt += 1
+
+        if countCmt == 2:
+            countCmt = 0
+            return False, 'abriu e fechou o comentario'
+        else:
+            return True, 'ERRO: COMENTARIO NÃO TERMINA, LINHA {}'.format(abriuNaLinha)
+
 def removeComentarios(palavra):
-    return re.sub('\/\*(\*(?!\/)|[^*])*\*\/', '', palavra)
+    return re.sub('/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/', '', palavra)
 
 #Verifica se o token é um integer
 def t_integer(palavra):
@@ -127,25 +150,36 @@ def analisador(palavra):
     elif t_float(palavra):
         return print("Float: {}".format(palavra))
     else:
-        return print("Terminal: {}".format(palavra))
+        return print("ERRO: CARACTERE INVALIDO NA LINHA {} ::{}::".format(None, palavra))
 
 def main():
-    #Abre arquivo com o codigo
+    #Abre arquivo
     filepath = 'guru99.txt'
-    with open(filepath) as fp:
-        line = fp.readline()
-        cnt = 1
-        #Lê linha por linha no arquivo e separa os tokens
-        while line:
-            #print("Line {}: {}".format(cnt, line.strip()))
-            #antes de fazer o split do texto, verificar se o mesmo possui comentarios
-            newText = removeComentarios(line)
-            splitted_text = re.split("\s", newText)
-            #para cada token verifica qual a qual classe de lexema ele esta inserido
-            for word in splitted_text:
-                analisador(word)
+    found, p = verificaComentario(filepath)
+    if found:
+        print(p)
+    else:
+        f = open(filepath, "r")
+        newText = removeComentarios(f.read())
+        splitted_text = re.split("\s", newText)
+        #para cada token verifica qual a qual classe de lexema ele esta inserido
+        for word in splitted_text:
+            analisador(word)
+        '''
+        with open(filepath) as fp:
             line = fp.readline()
-            cnt += 1
+            cnt = 1
+            #Lê linha por linha no arquivo e separa os tokens
+            while line:
+                #print("Line {}: {}".format(cnt, line.strip()))
+                #antes de fazer o split do texto, verificar se o mesmo possui comentarios
+                newText = removeComentarios(line)
+                splitted_text = re.split("\s", newText)
+                #para cada token verifica qual a qual classe de lexema ele esta inserido
+                for word in splitted_text:
+                    analisador(word, cnt)
+                line = fp.readline()
+                cnt += 1'''
 
 if __name__== "__main__":
   main()

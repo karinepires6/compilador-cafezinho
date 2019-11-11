@@ -1,4 +1,10 @@
-int id , id 
+/*comentario 
+aquis programa*/
 programa {
-retorne id = id ;
-}
+	int i ;
+	i = 5 ;
+	89int = 2 ;
+	se ( i == 78 ) {
+		escreva i ;
+	}
+} /*comentaario 2*/
