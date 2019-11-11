@@ -1,5 +1,11 @@
 import re
 
+'''
+Analisador Léxico - Disciplina de Compiladores 2019/2
+Alunos: Karine Pires de Araújo
+        Guilherme Sampaio
+'''
+
 palavras_reservadas = [
     'programa', 
     'car', 
